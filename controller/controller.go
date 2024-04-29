@@ -106,6 +106,7 @@ func (c *controller) processNextItem() bool {
 	if shutdown {
 		return false
 	}
+	defer c.queue.Done(item)
 	key := item.(string)
 	err := c.syncService(key)
 	if err != nil {
