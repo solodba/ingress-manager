@@ -3,6 +3,8 @@ package controller
 import (
 	"reflect"
 
+	v12 "k8s.io/api/networking/v1"
+	v13 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	serviceInformer "k8s.io/client-go/informers/core/v1"
 	ingressInformer "k8s.io/client-go/informers/networking/v1"
@@ -63,7 +65,15 @@ func (c *controller) updateService(oldObj, newObj interface{}) {
 
 // 删除Ingress方法
 func (c *controller) deleteIngress(obj interface{}) {
-
+	ingress := obj.(*v12.Ingress)
+	ownerReference := v13.GetControllerOf(ingress)
+	if ownerReference == nil {
+		return
+	}
+	if ownerReference.Kind != "Service" {
+		return
+	}
+	c.queue.Add(ingress.Namespace + "/" + ingress.Name)
 }
 
 // controller启动方法
