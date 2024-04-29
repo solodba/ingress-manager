@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"k8s.io/apimachinery/pkg/util/runtime"
 	serviceInformer "k8s.io/client-go/informers/core/v1"
 	ingressInformer "k8s.io/client-go/informers/networking/v1"
 	"k8s.io/client-go/kubernetes"
@@ -34,6 +35,15 @@ func NewController(clientSet kubernetes.Interface, serviceInformer serviceInform
 		DeleteFunc: c.deleteIngress,
 	})
 	return c
+}
+
+// workqueue加入队列的方法
+func (c *controller) enqueue(obj interface{}) {
+	key, err := cache.MetaNamespaceKeyFunc(obj)
+	if err != nil {
+		runtime.HandleError(err)
+	}
+	c.queue.Add(key)
 }
 
 // 添加Service方法
