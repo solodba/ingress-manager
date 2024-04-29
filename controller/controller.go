@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"reflect"
+
 	"k8s.io/apimachinery/pkg/util/runtime"
 	serviceInformer "k8s.io/client-go/informers/core/v1"
 	ingressInformer "k8s.io/client-go/informers/networking/v1"
@@ -48,12 +50,15 @@ func (c *controller) enqueue(obj interface{}) {
 
 // 添加Service方法
 func (c *controller) addService(obj interface{}) {
-
+	c.enqueue(obj)
 }
 
 // 更新Service方法
 func (c *controller) updateService(oldObj, newObj interface{}) {
-
+	if reflect.DeepEqual(oldObj, newObj) {
+		return
+	}
+	c.enqueue(newObj)
 }
 
 // 删除Ingress方法
