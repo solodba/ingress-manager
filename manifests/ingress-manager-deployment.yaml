@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-manager-deploy
+  namespace: ingress-manager-ns
+  labels:
+    app: ingress-manager-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingress-manager-pod
+  template:
+    metadata:
+      labels:
+        app: ingress-manager-pod
+    spec:
+      serviceAccountName: ingress-manager-sa
+      containers:
+        - name: ingress-manager
+          image: huxiaodan/ingress-manager:v1.0.0

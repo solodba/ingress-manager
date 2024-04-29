@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ingress-manager-cr
+rules:
+  - verbs:
+      - list
+      - watch
+      - get
+    apiGroups:
+      - ""
+    resources:
+      - services
+  - verbs:
+      - get
+      - create
+      - delete
+      - update
+      - list
+      - watch
+    apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
